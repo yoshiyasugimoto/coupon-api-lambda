@@ -2,10 +2,10 @@ deploy:
 	sls deploy --stage production
 
 local_list:
-	sls invoke local --function list
+	curl http://localhost:3000/production
 
 local_post:
-	sls invoke local --function post
+	curl -X POST http://localhost:3000/production/post
 
 invoke_post:
 	sls invoke --function post

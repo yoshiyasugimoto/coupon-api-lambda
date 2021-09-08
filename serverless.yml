@@ -2,6 +2,9 @@ service: upload-coupon-img
 
 frameworkVersion: "2"
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: python3.8
@@ -34,3 +37,11 @@ functions:
 
   post:
     handler: handler.post
+    events:
+      - http:
+          path: /post
+          method: post
+          cors: true
+          response:
+            headers:
+              Content-Type: application/json;charset=UTF-8

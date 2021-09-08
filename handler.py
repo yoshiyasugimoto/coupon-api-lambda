@@ -43,6 +43,7 @@ def list(event, context):
 def post(event, context):
     result = table.scan()
 
+    # 7-digit zero-filled ID
     max_id = max([i["id"] for i in result["Items"]]) if result["Items"] else '0'
     file_id = format(int(max_id) + 1, '07')
 
