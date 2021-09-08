@@ -1,3 +1,4 @@
+import base64
 
 import decimal
 import os
@@ -41,13 +42,20 @@ def list(event, context):
 
 
 def post(event, context):
+    img_string = event.get("body", "")
+    if event.get("isBase64Encoded", False) is True:
+        img_data = base64.b64decode(img_string)
+    else:
+        img_data = img_string.encode('utf-8')
+
     result = table.scan()
 
     # 7-digit zero-filled ID
     max_id = max([i["id"] for i in result["Items"]]) if result["Items"] else '0'
     file_id = format(int(max_id) + 1, '07')
 
-    s3.Bucket(S3_BUCKET).upload_file(f"{S3_BUCKET}/coupon-img-1/coupon-img-1.png", f"coupon-img-{file_id}/coupon-img-{file_id}.png")
+    s3_object = s3.Object(S3_BUCKET, f"coupon-img-{file_id}/coupon-img-{file_id}.png")
+    s3_object.put(Body=base64.b64decode(img_data))
     s3.Bucket(S3_BUCKET).upload_file(f"{S3_BUCKET}/coupon-img-1/qr-code-coupon-img-1.png", f"coupon-img-{file_id}/qr-code-coupon-img-{file_id}.png")
 
     path = f"coupon-images/coupon-img-{file_id}/"

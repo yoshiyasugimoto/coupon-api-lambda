@@ -4,6 +4,13 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-offline
+#   - serverless-plugin-custom-binary
+
+# custom:
+#   apigatewayBinary:
+#     types:
+#       - image/*
+#       - multipart/form-data
 
 provider:
   name: aws
@@ -42,6 +49,4 @@ functions:
           path: /post
           method: post
           cors: true
-          response:
-            headers:
-              Content-Type: application/json;charset=UTF-8
+          contentHandling: CONVERT_TO_BINARY
