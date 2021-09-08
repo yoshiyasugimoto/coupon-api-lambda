@@ -6,7 +6,7 @@ authors = ["yoshiyasugimoto"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-boto3 = "^1.18.36"
+boto3 = "^1.18.37"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.7"
