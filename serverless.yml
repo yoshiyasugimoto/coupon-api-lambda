@@ -1,0 +1,36 @@
+service: upload-coupon-img
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: python3.8
+  environment:
+    DYNAMODB_TABLE: coupons
+    S3_BUCKET: coupon-imges
+  lambdaHashingVersion: 20201221
+  stage: production
+  region: ap-northeast-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+        - s3:*
+      Resource:
+        - "arn:aws:dynamodb:*"
+        - "arn:aws:s3:::*"
+
+functions:
+  list:
+    handler: handler.list
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+          response:
+            headers:
+              Content-Type: application/json;charset=UTF-8
+
+  post:
+    handler: handler.post

@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "coupon-api-lambda"
+version = "0.1.0"
+description = ""
+authors = ["yoshiyasugimoto"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "^1.18.36"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.7"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
