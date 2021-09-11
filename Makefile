@@ -4,18 +4,12 @@ deploy:
 dev_list:
 	sls invoke local --function list
 
-dev_post:
-	sls invoke local --function post
-
 offline_api:
 	sls offline start
 
 local_list:
 	curl http://localhost:3000/production | jq .
 
-local_post:
-	curl -X POST -H "Content-Type: application/json" -d @coupon-img-1.txt http://localhost:3000/production/post
-
-invoke_post:
-	sls invoke --function post
-
+# id=0000028, title=クーポン0000028(encode=%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B30000028)
+local_get:
+	curl  http://localhost:3000/production/0000028/%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B30000028
