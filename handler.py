@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
 
 import decimal
 import os
@@ -15,7 +15,7 @@ table = dynamodb.Table(os.getenv("DYNAMODB_TABLE"))
 
 
 def get(event, context):
-    path = event.get('path')
+    path = event.get('pathParameters')
     coupon_id = path['id']
     coupon_title = path['title']
 
@@ -26,7 +26,28 @@ def get(event, context):
         }
     )
 
-    response_body = json.dumps(result['Item'], cls=decimal_encoder, ensure_ascii=False)
+    coupon_img_obj = s3.Object(S3_BUCKET, f'coupon-img-{coupon_id}/coupon-img-{coupon_id}.png')
+    coupon_img_data = coupon_img_obj.get()['Body'].read()
+    coupon_img_base64 = b64encode(coupon_img_data)
+
+    qr_code_img_obj = s3.Object(S3_BUCKET, f'coupon-img-{coupon_id}/coupon-img-{coupon_id}.png')
+    qr_code_img_data = qr_code_img_obj.get()['Body'].read()
+    qr_code_img_base64 = b64encode(qr_code_img_data)
+
+    body = result.get('Item', {
+        'id': coupon_id,
+        'title': coupon_title
+    })
+
+    body.update(
+        {
+            'base64CouponImg': coupon_img_base64.decode(),
+            'base64QrCodeImg': qr_code_img_base64.decode(),
+            'dynamodbResult': result
+        }
+    )
+
+    response_body = json.dumps(body, cls=decimal_encoder, ensure_ascii=False)
 
     # create a response
     response = {
