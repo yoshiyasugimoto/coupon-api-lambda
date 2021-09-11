@@ -12,4 +12,4 @@ local_list:
 
 # id=0000028, title=クーポン0000028(encode=%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B30000028)
 local_get:
-	curl  http://localhost:3000/production/0000028/%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B30000028
+	curl  http://localhost:3000/production/0000028/%E3%82%AF%E3%83%BC%E3%83%9D%E3%83%B30000028 | jq .

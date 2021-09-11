@@ -30,7 +30,7 @@ def get(event, context):
     coupon_img_data = coupon_img_obj.get()['Body'].read()
     coupon_img_base64 = b64encode(coupon_img_data)
 
-    qr_code_img_obj = s3.Object(S3_BUCKET, f'coupon-img-{coupon_id}/coupon-img-{coupon_id}.png')
+    qr_code_img_obj = s3.Object(S3_BUCKET, f'coupon-img-{coupon_id}/qr-code-coupon-img-{coupon_id}.png')
     qr_code_img_data = qr_code_img_obj.get()['Body'].read()
     qr_code_img_base64 = b64encode(qr_code_img_data)
 
@@ -41,9 +41,8 @@ def get(event, context):
 
     body.update(
         {
-            'base64CouponImg': coupon_img_base64.decode(),
-            'base64QrCodeImg': qr_code_img_base64.decode(),
-            'dynamodbResult': result
+            'base64CouponImg': f"data:image/png;base64,{coupon_img_base64.decode()}",
+            'base64QrCodeImg': f"data:image/png;base64,{qr_code_img_base64.decode()}"
         }
     )
 
