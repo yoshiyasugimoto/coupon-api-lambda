@@ -31,6 +31,23 @@ provider:
         - "arn:aws:s3:::*"
 
 functions:
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: /{id}/{title}
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            parameters:
+              paths:
+                id: true
+                title: true
+          response:
+            headers:
+              Content-Type: application/json;charset=UTF-8
+
   list:
     handler: handler.list
     events:

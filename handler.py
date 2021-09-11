@@ -14,6 +14,34 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.getenv("DYNAMODB_TABLE"))
 
 
+def get(event, context):
+    path = event.get('path')
+    coupon_id = path['id']
+    coupon_title = path['title']
+
+    # fetch coupon from the dynamodb
+    result = table.get_item(
+        Key={
+            'id': coupon_id, 'title': coupon_title
+        }
+    )
+
+    response_body = json.dumps(result['Item'], cls=decimal_encoder, ensure_ascii=False)
+
+    # create a response
+    response = {
+        "statusCode": 200,
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
+        "body": response_body
+    }
+
+    return response
+
+
 def list(event, context):
 
     # fetch all coupons from the dynamodb
