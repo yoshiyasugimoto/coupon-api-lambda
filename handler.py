@@ -1,4 +1,4 @@
-import base64
+from base64 import b64decode
 
 import decimal
 import os
@@ -42,11 +42,19 @@ def list(event, context):
 
 
 def post(event, context):
+
     img_string = event.get("body", "")
-    if event.get("isBase64Encoded", False) is True:
-        img_data = base64.b64decode(img_string)
-    else:
-        img_data = img_string.encode('utf-8')
+    body_dict = json.loads(img_string)
+
+    base64_coupon_img = body_dict['couponImg'][22:]
+    encode_coupon_img = base64_coupon_img.encode()
+
+    base64_qr_code_img = body_dict['qrCodeImg'][22:]
+    encode_qr_code_img = base64_qr_code_img.encode()
+
+    coupon_title = body_dict['couponTitle']
+
+    coupon_description = body_dict['couponDescription']
 
     result = table.scan()
 
@@ -54,23 +62,32 @@ def post(event, context):
     max_id = max([i["id"] for i in result["Items"]]) if result["Items"] else '0'
     file_id = format(int(max_id) + 1, '07')
 
-    s3_object = s3.Object(S3_BUCKET, f"coupon-img-{file_id}/coupon-img-{file_id}.png")
-    s3_object.put(Body=base64.b64decode(img_data))
-    s3.Bucket(S3_BUCKET).upload_file(f"{S3_BUCKET}/coupon-img-1/qr-code-coupon-img-1.png", f"coupon-img-{file_id}/qr-code-coupon-img-{file_id}.png")
+    # save the coupon img to s3
+    s3_coupon_img_object = s3.Object(S3_BUCKET, f"coupon-img-{file_id}/coupon-img-{file_id}.png")
+    s3_coupon_img_object.put(Body=b64decode(encode_coupon_img))
+
+    # save the qr code img to s3
+    s3_qr_code_img_object = s3.Object(S3_BUCKET, f"coupon-img-{file_id}/qr-code-coupon-img-{file_id}.png")
+    s3_qr_code_img_object.put(Body=b64decode(encode_qr_code_img))
 
     path = f"coupon-images/coupon-img-{file_id}/"
 
     table.put_item(
         Item={
             'id': file_id,
-            'title': f'クーポン{file_id}',
+            'title': coupon_title,
             'path': path,
-            'description': f'クーポン{file_id}' * 5,
+            'description': coupon_description,
         }
     )
 
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
         'body': json.dumps('Success!')
     }
 

@@ -49,4 +49,4 @@ functions:
           path: /post
           method: post
           cors: true
-          contentHandling: CONVERT_TO_BINARY
+          # contentHandling: CONVERT_TO_BINARY
