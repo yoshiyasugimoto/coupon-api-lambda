@@ -11,7 +11,7 @@ offline_api:
 	sls offline start
 
 local_list:
-	curl http://localhost:3000/production
+	curl http://localhost:3000/production | jq .
 
 local_post:
 	curl -X POST -H "Content-Type: application/json" -d @coupon-img-1.txt http://localhost:3000/production/post
