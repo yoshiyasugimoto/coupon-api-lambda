@@ -15,6 +15,9 @@ table = dynamodb.Table(os.getenv("DYNAMODB_TABLE"))
 
 
 def get(event, context):
+    """
+    1. 登録されている特定のクーポンの画像と QR コードの画像の取得をする API
+    """
     path = event.get('pathParameters')
     coupon_id = path['id']
     coupon_title = path['title']
@@ -63,7 +66,9 @@ def get(event, context):
 
 
 def list(event, context):
-
+    """
+    2. 登録クーポンの ID、タイトル、詳細のリストを返却する API
+    """
     # fetch all coupons from the dynamodb
     result = table.scan()
 
@@ -90,7 +95,9 @@ def list(event, context):
 
 
 def post(event, context):
-
+    """
+    3. 新規クーポン登録をする API
+    """
     img_string = event.get("body", "")
     body_dict = json.loads(img_string)
 
